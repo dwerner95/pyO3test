@@ -1,0 +1,22 @@
+[package]
+name = "py03test"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "py03test"
+path = "src/lib.rs"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+numpy = "0.14.0"
+hdf5 = "0.8.1"
+ndarray=">0.14"
+
+[dependencies.pyo3]
+version = ">0.11.1"
+features = ["extension-module"]
+
+[features]
+python = []
