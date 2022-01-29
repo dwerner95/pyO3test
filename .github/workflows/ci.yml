@@ -8,8 +8,6 @@ on:
   pull_request:
     branches:
       - main
-  schedule:
-    - cron: '0 18 * * *'
 
 env:
   CARGO_TERM_COLOR: always
@@ -49,4 +47,5 @@ jobs:
       - name: Run stuff
         run: |
           cd testdir
+          set PATH=%PATH%;"$CONDA_PREFIX"/lib
           python3 run.py
