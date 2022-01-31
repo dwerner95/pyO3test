@@ -1,0 +1,51 @@
+---
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  conda:
+    name: conda
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with: {submodules: true}
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with: {toolchain: 'nightly', profile: minimal, override: true}
+      - name: Install conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: false
+          activate-environment: "testenv"
+          python-version: "3.9"
+      - name: Install HDF5
+        run: |
+          conda install -y -c conda-forge 'hdf5=1.12.0'
+      - name: Install preliminary stuff
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install wheel
+          python3 -m pip install setuptools_rust
+      - name: Install package
+        run: |
+          export HDF5_DIR="$CONDA_PREFIX"
+          python3 -m pip install .
+      - name: Run stuff
+        run: |
+          cd testdir
+          set PATH=%PATH%;"$CONDA_PREFIX"/lib
+          python3 run.py
